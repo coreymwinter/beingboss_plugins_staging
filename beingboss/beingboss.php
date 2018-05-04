@@ -517,6 +517,126 @@ add_filter( 'menu_order', 'wpse_custom_menu_order', 10, 1 );
 
 
 
+/*
+* Initializing the Home Page custom post type
+*/
+ 
+function home_post_type() {
+ 
+// Set UI labels for Home page post type
+    $labels = array(
+        'name'                => _x( 'Home Posts', 'Post Type General Name' ),
+        'singular_name'       => _x( 'Home Post', 'Post Type Singular Name' ),
+        'menu_name'           => __( 'Home Posts' ),
+        'parent_item_colon'   => __( 'Parent Home Post' ),
+        'all_items'           => __( 'All Home Posts' ),
+        'view_item'           => __( 'View Home Post' ),
+        'add_new_item'        => __( 'Add New Home Post' ),
+        'add_new'             => __( 'Add New' ),
+        'edit_item'           => __( 'Edit Home Post' ),
+        'update_item'         => __( 'Update Home Post' ),
+        'search_items'        => __( 'Search Home Posts' ),
+        'not_found'           => __( 'Not Found' ),
+        'not_found_in_trash'  => __( 'Not found in Trash' ),
+    );
+     
+// Set other options for Home page post type
+     
+    $args = array(
+        'label'               => __( 'homeposts' ),
+        'description'         => __( 'Being Boss Home Posts' ),
+        'labels'              => $labels,
+        // Features this CPT supports in Post Editor
+        'supports'            => array( 'title', 'editor', 'excerpt', 'author', 'thumbnail', 'comments', 'revisions', 'custom-fields', ),
+        /* A hierarchical CPT is like Pages and can have
+        * Parent and child items. A non-hierarchical CPT
+        * is like Posts.
+        */ 
+        'hierarchical'        => false,
+        'public'              => true,
+        'show_ui'             => true,
+        'show_in_menu'        => true,
+        'show_in_nav_menus'   => true,
+        'show_in_admin_bar'   => true,
+        'menu_position'       => 25,
+        'can_export'          => true,
+        'has_archive'         => false,
+        'exclude_from_search' => true,
+        'publicly_queryable'  => true,
+        'capability_type'     => 'post',
+    );
+     
+    // Registering your Custom Post Type
+    register_post_type( 'homeposts', $args );
+ 
+}
+ 
+/* Hook into the 'init' action so that the function
+* Containing our post type registration is not 
+* unnecessarily executed. 
+*/
+ 
+add_action( 'init', 'home_post_type', 0 );
+
+
+
+add_action( 'cmb2_admin_init', 'cmb2_homeposts_metabox' );
+/**
+ * Define the metabox and field configurations.
+ */
+function cmb2_homeposts_metabox() {
+
+    // Start with an underscore to hide fields from custom fields list
+    $prefix = 'bbhome_';
+
+    /**
+     * Initiate the metabox
+     */
+    $bbhome = new_cmb2_box( array(
+        'id'            => 'bbhome_metabox',
+        'title'         => __( 'Home Post Details', 'cmb2' ),
+        'object_types'  => array( 'homeposts', ), // Post type
+        'context'       => 'normal',
+        'priority'      => 'high',
+        'show_names'    => true, // Show field names on the left
+        // 'cmb_styles' => false, // false to disable the CMB stylesheet
+        // 'closed'     => true, // Keep the metabox closed by default
+    ) );
+
+    $bbhome->add_field( array(
+            'name'    => 'Link',
+            'desc'    => '',
+            'default' => '',
+            'id'      => $prefix . 'link',
+            'type'    => 'text',
+    ) );
+
+    $bbhome->add_field( array(
+            'name'    => 'Top Label',
+            'desc'    => '',
+            'default' => '',
+            'id'      => $prefix . 'top_label',
+            'type'    => 'text',
+    ) );
+
+    $bbhome->add_field( array(
+            'name'    => 'Link Label',
+            'desc'    => '',
+            'default' => '',
+            'id'      => $prefix . 'link_label',
+            'type'    => 'text',
+    ) );
+
+    $bbhome->add_field( array(
+            'name'    => 'Order',
+            'desc'    => '',
+            'default' => '',
+            'id'      => $prefix . 'order',
+            'type'    => 'text',
+    ) );
+
+}
+
 
 
 
